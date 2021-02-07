@@ -32,15 +32,15 @@ router.get('/lecture', async (req,res) => {
         return;
     }
     try{
+        const course = await Course.findOne();
         const doc = await Lecture.create({
-            course: mongoose.Types.ObjectId('601ef1d2b745d1a9a77ef90d'),
+            course: course._id,
             title: 'test lecture 1',
             studentsEnrolled: [],
             studentEligibleToEnroll: [],
         });
-        const currentCourse = await Course.findById("601ef1d2b745d1a9a77ef90d");
-        currentCourse.lectures.push(doc._id);
-        currentCourse.save();
+        course.lectures.push(doc._id);
+        course.save();
         res.send("Lecture created");
     }
     catch(error){
