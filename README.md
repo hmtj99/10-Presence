@@ -8,3 +8,5 @@ Steps to start server:
 3) Place the key.js file into config folder (Get key.js file from me)
 3) Go inside the folder using command line and run npm
 4) run the command - npm start 
+
+The app is running after all the commands
