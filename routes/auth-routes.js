@@ -6,7 +6,7 @@ router.get('/login', (req,res) => {
         res.redirect('/profile');
         return;
     }
-    res.render('login');
+    res.redirect('google');
 })
 
 router.get('/logout', (req,res) => {
