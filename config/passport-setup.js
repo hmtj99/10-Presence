@@ -35,6 +35,7 @@ passport.use(
                     name: profile._json.name,
                     coursesTeaching: [],
                     coursesEnrolledIn: [],
+                    courseLectureMap: {},
                 });
                 done(null,newUser);
             }
