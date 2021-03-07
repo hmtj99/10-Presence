@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+    <h2>Text input fields</h2>
+
+    <div class="create-class content">
+        <form action="/profile" method="POST">
+            <label for="instructer_id">Instructer Id:</label>
+            <input type="text" id="instructer_id" name="instructer_id" required><br>
+            <label for="Ctitle">Class title:</label>
+            <input type="text" id="Ctitle" name="Ctitle" required><br>
+
+            <label for="start_of_class">start of class(date and time):</label>
+            <input type="datetime-local" id="start_of_class" name="start_of_class"><br>
+            <label for="end_of_class">End of class(date and time):</label>
+            <input type="datetime-local" id="end_of_class" name="end_of_class"><br>
+            <label for="criteria">Attendance Criteria:</label>
+            <input type="text" id="criteria" name="criteria" required><br>
+
+            <button>Submit</button>
+        </form>
+    </div>
+
+    <p>Note that the form itself is not visible.</p>
+
+    <p>Also note that the default width of text input fields is 20 characters.</p>
+
+</body>
+
+</html>

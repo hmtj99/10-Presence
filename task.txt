@@ -16,3 +16,6 @@ task2:  Create a basic form in ejs template which allows users to create new lec
             c.Start time
             d.End time
             e.An empty array to which student IDs will be added later on when they click their attendance link. This array will track which students attended this particular lecture.
+
+
+note - create template in node js and mongodb with hidden index
