@@ -7,11 +7,11 @@ import { user } from '../models';
   const fields = [
     {
       label: 'Student ID',
-      value: 'student_id'
+      value: 'googleID'
     },
     {
       label: 'Student Name',
-      value: 'student_name'
+      value: 'name'
     },
     {
      label: 'Attendance Percentage',
