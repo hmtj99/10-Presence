@@ -147,6 +147,20 @@ router.get('/download',async (req, res) => {
 
    });
 
+router.get('/getAttendance',async (req, res)=>{
+    const courseId= req.query.courseId;
+     let course ;
 
+     try{
+         course = await Course.findbyId(courseId);
+    
+     }
+     catch(error){
+      res.send(error);
+     }
+     let attendancedata =[];
+     
+
+})
 
 module.exports = router;
