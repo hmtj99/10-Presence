@@ -47,6 +47,27 @@ router.get('/lecture', async (req,res) => {
         console.log(error);
     }
 })
-
+router.get('/getAttendance', async (req,res) => {
+    const courseId = req.query.courseId;
+    if(!req.user){
+        res.redirect('/auth/login');
+        return;
+    }
+    try{
+        const course = await Course.findById(courseId);
+        const doc = await Lecture.create({
+            course: course._id,
+            title: 'test lecture 1',
+            studentsEnrolled: [],
+            studentEligibleToEnroll: [],
+        });
+        course.lectures.push(doc._id);
+        course.save();
+        res.send("Lecture created");
+    }
+    catch(error){
+        console.log(error);
+    }
+})
 
 module.exports = router;
