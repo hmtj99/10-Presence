@@ -7,7 +7,7 @@ import { user } from '../models';
   const fields = [
     {
       label: 'Student ID',
-      value: 'googleID'
+      value: 'email'
     },
     {
       label: 'Student Name',
