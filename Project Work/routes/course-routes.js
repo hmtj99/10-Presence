@@ -1,3 +1,4 @@
+const downloadResource = require("../utils/util");
 const router = require("express").Router();
 const Course = require('../models/course.model');
 const User = require('../models/user.model');
@@ -124,6 +125,27 @@ router.get('/markAttendance', async (req,res) => {
     res.send("<h1>Attendance Marked</h1>");
 
 })
+
+router.get('/download',async (req, res) => {
+    const fields = [
+      {
+        label: 'Student ID',
+        value: 'email'
+      },
+      {
+        label: 'Student Name',
+        value: 'name'
+      },
+      {
+       label: 'Attendance Percentage',
+        value: 'attendance_percentage'
+      }
+    ];
+    const data = await User.findAll();
+  
+    return downloadResource(res, 'Attendance.csv', fields, data);
+
+   });
 
 
 
