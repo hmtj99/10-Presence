@@ -7,9 +7,18 @@ const mongoose = require('mongoose');
 const keys = require('./config/keys');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
+const bodyParser = require('body-parser');
+//const upload = require('express-fileupload');
 
 const app = express();
 app.set("view engine","ejs");
+
+//app.use(upload());
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 app.use(cookieSession({
     maxAge: 24*60*60*1000,
@@ -27,6 +36,8 @@ app.use('/course',courseRoutes);
 app.get('/', (req,res) => {
     res.render('home');
 })
+
+
 
 //const PORT = process.env.PORT || 3000
 
