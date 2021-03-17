@@ -1,4 +1,3 @@
-const downloadResource = require("../utils/util");
 const router = require("express").Router();
 const Course = require('../models/course.model');
 const User = require('../models/user.model');
@@ -127,26 +126,7 @@ router.get('/markAttendance', async (req,res) => {
 
 })
 
-router.get('/download',async (req, res) => {
-    const fields = [
-      {
-        label: 'Student ID',
-        value: 'email'
-      },
-      {
-        label: 'Student Name',
-        value: 'name'
-      },
-      {
-       label: 'Attendance Percentage',
-        value: 'attendance_percentage'
-      }
-    ];
-    const data = await User.findAll();
-  
-    return downloadResource(res, 'Attendance.csv', fields, data);
 
-   });
 
 router.get('/getAttendance',async (req, res)=>{
      courseId= req.query.courseId;
@@ -171,7 +151,7 @@ router.get('/getAttendance',async (req, res)=>{
              if(!student.courseLectureMap){
                  continue;
              }
-             curse attendedLectures = student.courseLectureMap.get(course._id.toString()).length;
+             const attendedLectures = student.courseLectureMap.get(course._id.toString()).length;
              percentage = ((attendedLectures/totalLectures)*100).toFixed(2);
              data.push({
                  id: student.email.split('@')[10],
