@@ -1,54 +1,177 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
+
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="Content-Style-Type" content="text/css">
   <title></title>
   <meta name="Generator" content="Cocoa HTML Writer">
   <meta name="CocoaVersion" content="1671.6">
- 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: lightgreen;
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: bold;
+      font-size: 40px;
+      color: purple;
+    }
+
+    .classdiv {
+      padding: 10px;
+      margin: 10px 10px 10px 50px;
+      font-weight: bold;
+    }
+
+    label,
+    strong {
+      font-size: 21px;
+      color: red;
+    }
+
+    input,
+    textarea {
+      border: 2px solid blue;
+      color: black;
+      margin-left: 10px;
+    }
+
+    #prof-name,
+    #course-name {
+      width: 500px;
+    }
+
+    #semester {
+      width: 100px;
+    }
+
+    #degree {
+      width: 150px;
+      padding: 10px;
+      border: 2px solid blue;
+      font-weight: bold;
+    }
+
+    #Prof_ID,
+    #other {
+      width: 400px;
+    }
+
+    #attend {
+      width: 300px;
+    }
+
+    .classdiv div {
+      margin-left: 50px;
+    }
+
+    .classdiv2 strong {
+      color: green;
+    }
+
+    #PR {
+      width: 500px;
+    }
+  </style>
 </head>
+
 <body>
-<div>
-  <form action="">
-  
-    <label for="prof-name">Professor Name:</label><br>
-    <input type="text" id="prof-name" name="prof-name"><br>
-
-    <label for="course-name">Course Name:</label><br>
-    <input type="text" id="course-name" name="course-name"><br>
-  
-    <label for="course-credit">Course Credit:</label><br>
-    <input type="number" id="course-credit" name="course-credit"><br> 
-
-    <label for="semester">Semester:</label><br>
-    <input list="semesters" name="semester" id="semester">
-    <datalist id="semesters">
-      <option value="1">
-      <option value="2">
-      <option value="3">
-      <option value="4">
-      <option value="5">
-      <option value="6">
-      <option value="7">
-      <option value="8">
-      <option value="Summer">
-    </datalist><br>
-
-    <label for="year">Month and Year:</label><br>
-    <input type="month" id="year" name="year"><br>
-  
-    <label for="degree">Degree:</label><br>
-    <select id="degree">
-      <option value="UG">Under Graduate</option>
-      <option value="PG">Post Graduate</option>
-    </select><br>
-
-    <label for="Prof_ID">Instructor Email:</label><br>
-    <input type="text" id="Prof_ID" name="Prof_ID"><span>@daiict.ac.in</span><br>
-  
-
-  </form>
-</div>
+  <div>
+    <h2>Information About The Course</h2>
+    <form action="">
+      <div class="classdiv">
+        <label for="prof-name"><strong> Professor Name: </strong></label>
+        <input type="text" id="prof-name" name="prof-name"><br>
+      </div>
+      <div class="classdiv">
+        <label for="course-name"><strong> Course Name: </strong></label>
+        <input type="text" id="course-name" name="course-name"><br>
+      </div>
+      <div class="classdiv">
+        <label for="course-credit"><strong> Course Credit: </strong></label>
+        <input type="number" id="course-credit" name="course-credit"><br>
+      </div>
+      <div class="classdiv">
+        <label for="semester"><strong> Semester: </strong></label>
+        <input list="semesters" name="semester" id="semester">
+        <datalist id="semesters">
+          <option value="1">
+          <option value="2">
+          <option value="3">
+          <option value="4">
+          <option value="5">
+          <option value="6">
+          <option value="7">
+          <option value="8">
+          <option value="Summer">
+        </datalist><br>
+      </div>
+      <div class="classdiv">
+        <label for="year"><strong> Month and Year: </strong></label>
+        <input type="month" id="year" name="year"><br>
+      </div>
+      <div class="classdiv">
+        <label for="degree"><strong> Degree: </strong></label>
+        <select id="degree">
+          <option value="UG">Under Graduate</option>
+          <option value="PG">Post Graduate</option>
+        </select><br>
+      </div>
+      <div class="classdiv">
+        <label for="Prof_ID"><strong> Instructor Email: </strong></label>
+        <input type="text" id="Prof_ID" name="Prof_ID"><span></b>@daiict.ac.in</span><br>
+      </div>
+      <div class="classdiv">
+        <label for="sn"><strong> Number of students : </strong></label>
+        <input type="number" name="sn" id="sn">
+      </div>
+      <div class="classdiv">
+        <label for="attend"><strong> Attendance criteria : </strong></label>
+        <input type="text" name="attend" id="attend">
+      </div>
+      <div class="classdiv">
+        <strong> Evaluation policy(Weightage in percentage) : </strong><br>
+        <div class="classdiv2">
+          <label for="ME"><strong> &nbsp;&nbsp;Mid-semester exam : </strong></label>
+          <input type="number" name="ME" id="ME">
+          <label for="EE"><strong> &nbsp; End-semester exam : </strong></label>
+          <input type="number" name="EE" id="EE"><br>
+          <label for="Proj"><strong> &nbsp; Project and assignments : </strong></label>
+          <input type="number" name="Proj" id="Proj">
+        </div>
+        <div class="classdiv2">
+          <label for="other" id="oth"><strong>&nbsp; Other : </strong></label>
+          <input type="text" name="other" id="other">
+        </div>
+      </div>
+      <div class="classdiv">
+        <label for="desc"><strong> Brief description of course : </strong></label><br>
+        <textarea name="desc" id="desc" cols="70" rows="10"></textarea>
+      </div>
+      <div class="classdiv">
+        <label for="PR"><strong> Prerequisite : </strong></label>
+        <input type="text" name="PR" id="PR">
+      </div>
+      <div class="classdiv">
+        <label for="TA"><strong> TA details : </strong></label><br>
+        <textarea name="TA" id="TA" cols="70" rows="10"></textarea>
+      </div>
+      <div class="classdiv">
+        <label for="readmat"><strong> Reading material : </strong></label><br>
+        <textarea name="readmat" id="readmat" cols="60" rows="10"></textarea>
+      </div>
+      <div class="classdiv">
+        <input type="submit" value="Submit">
+        <input type="reset" value="Reset">
+      </div>
+    </form>
+  </div>
 </body>
+
 </html>
