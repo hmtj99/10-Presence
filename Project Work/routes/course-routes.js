@@ -3,6 +3,7 @@ const router = require("express").Router();
 const Course = require('../models/course.model');
 const User = require('../models/user.model');
 const Lecture = require('../models/lecture.model');
+const converter = require('json2csv');
 const {
     generateTokenFromUserAndLecture,
     getEmailTemplate,
@@ -158,7 +159,7 @@ router.get('/getAttendance',async (req, res)=>{
      catch(error){
       return res.json({status:"error", message:"Course not found"});
      }
-     const data = [];(
+     const data = [];
      if(course.instructor.toString() === req.user._id.toString()){
          const students = course.studentsEnrolled;
          const totalLectures = course.lectures.length;
@@ -178,12 +179,24 @@ router.get('/getAttendance',async (req, res)=>{
                  attendance: percentage,
              })
          }
+         
      }
      else{
          return res.json({status:"error", message:"The data can only be accessed by the instructor"});
      }
      
-     return res.json(data);
+     converter.json2csv(data, (err,csv) => {
+        if(err){
+            console.log(err);
+            return res.json({status:"error", message:"Error sending CSV"});
+        }
+        console.log(csv);
+        res.setHeader('Content-Type', 'text/csv');
+        res.attachment('data.csv');
+        return res.send(csv);
+        })
 })
+
+
 
 module.exports = router;
