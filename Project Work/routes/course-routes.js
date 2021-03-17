@@ -2,7 +2,7 @@ const router = require("express").Router();
 const Course = require('../models/course.model');
 const User = require('../models/user.model');
 const Lecture = require('../models/lecture.model');
-const converter = require('json2csv');
+let converter = require('json-2-csv');
 const {
     generateTokenFromUserAndLecture,
     getEmailTemplate,
@@ -146,7 +146,7 @@ router.get('/getAttendance',async (req, res)=>{
          if(totalLectures === 0){
              return res.json({status:"error", message:"No lectures have been taken in this course"});
          }
-         for(const studentID of students){
+         for(const studentId of students){
              student = await User.findById(studentId);
              if(!student.courseLectureMap){
                  continue;
@@ -154,11 +154,12 @@ router.get('/getAttendance',async (req, res)=>{
              const attendedLectures = student.courseLectureMap.get(course._id.toString()).length;
              percentage = ((attendedLectures/totalLectures)*100).toFixed(2);
              data.push({
-                 id: student.email.split('@')[10],
+                 id: student.email.split("@")[0],
                  name: student.name,
                  attendance: percentage,
              })
          }
+         console.log(data);
          
      }
      else{
@@ -174,7 +175,7 @@ router.get('/getAttendance',async (req, res)=>{
         res.setHeader('Content-Type', 'text/csv');
         res.attachment('data.csv');
         return res.send(csv);
-        })
+    })
 })
 
 
