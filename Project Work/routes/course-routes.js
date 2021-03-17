@@ -148,19 +148,42 @@ router.get('/download',async (req, res) => {
    });
 
 router.get('/getAttendance',async (req, res)=>{
-    const courseId= req.query.courseId;
+     courseId= req.query.courseId;
      let course ;
 
      try{
-         course = await Course.findbyId(courseId);
+         course = await Course.findById(courseId);
     
      }
      catch(error){
-      res.send(error);
+      return res.json({status:"error", message:"Course not found"});
      }
-     let attendancedata =[];
+     const data = [];(
+     if(course.instructor.toString() === req.user._id.toString()){
+         const students = course.studentsEnrolled;
+         const totalLectures = course.lectures.length;
+         if(totalLectures === 0){
+             return res.json({status:"error", message:"No lectures have been taken in this course"});
+         }
+         for(const studentID of students){
+             student = await User.findById(studentId);
+             if(!student.courseLectureMap){
+                 continue;
+             }
+             curse attendedLectures = student.courseLectureMap.get(course._id.toString()).length;
+             percentage = ((attendedLectures/totalLectures)*100).toFixed(2);
+             data.push({
+                 id: student.email.split('@')[10],
+                 name: student.name,
+                 attendance: percentage,
+             })
+         }
+     }
+     else{
+         return res.json({status:"error", message:"The data can only be accessed by the instructor"});
+     }
      
-
+     return res.json(data);
 })
 
 module.exports = router;
