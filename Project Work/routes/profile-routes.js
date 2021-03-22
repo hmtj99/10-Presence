@@ -1,11 +1,41 @@
 const router = require("express").Router();
+const Course = require('../models/course.model');
+const User = require('../models/user.model');
+const Lecture = require('../models/lecture.model');
 
-router.get('/', (req,res) => {
-    if(!req.user){
+const mongoose = require('mongoose');
+
+router.get('/', (req, res) => {
+    if (!req.user) {
         res.redirect('/auth/login');
         return;
     }
-    res.render('profile',{user:req.user})
+    res.render('profile', { user: req.user })
+})
+
+
+
+//http://localhost:3000/profile/getlecturelist?userId=60319538bc0bc9c95d46a91c
+
+router.get('/getlecturelist', async(req, res) => {
+    if (!req.user) {
+        res.redirect('/auth/login');
+        return;
+    }
+    try {
+        const user_ids = req.query.userId;
+        const us = await User.findById(user_ids);
+
+        console.log(us);
+        //res.send(us);
+
+
+
+
+
+    } catch (error) {
+        console.log(error);
+    }
 })
 
 module.exports = router;

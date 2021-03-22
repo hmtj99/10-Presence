@@ -135,10 +135,6 @@ router.get('/getattendancecriteria', async(req, res) => {
         const course_detail = await Course.findById(cid);
 
         //console.log(course_detail);
-
-
-
-
         res.send('Attendance Criteria = ' + course_detail.title);
 
         //res.send('Attendance Criteria = ' + course_detail.criteria);
@@ -148,6 +144,8 @@ router.get('/getattendancecriteria', async(req, res) => {
         console.log(error);
     }
 })
+
+
 
 
 
