@@ -26,9 +26,17 @@ router.get('/getlecturelist', async(req, res) => {
         const user_ids = req.query.userId;
         const us = await User.findById(user_ids);
 
-        console.log(us);
+        console.log(us.courseLectureMap);
         //res.send(us);
 
+
+        us.courseLectureMap.forEach(item => {
+            console.log(item);
+
+
+
+
+        });
 
 
 
