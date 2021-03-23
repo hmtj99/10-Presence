@@ -8,12 +8,9 @@ const keys = require('./config/keys');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
 const bodyParser = require('body-parser');
-//const upload = require('express-fileupload');
 
 const app = express();
 app.set("view engine","ejs");
-
-//app.use(upload());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -38,13 +35,6 @@ app.get('/', (req,res) => {
 })
 
 
-
-//const PORT = process.env.PORT || 3000
-
-//app.listen(
- // PORT,
-  //console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
-//) 
 app.listen(3000, () => {
     console.log("Server has started!!!");
     mongoose.connect(keys.mongoURI,
