@@ -60,28 +60,7 @@ router.post('/NewLecture',async (req,res)=>{
   
   }
   res.send("all done");
-
-
-        /*
-    const id = req.body.course;
-    console.log("this post",id);
-    Course.findById(id)
-    .then(result => {
-            console.log("this is result",result)
-            const newLec =Lecture.create({
-            course:result._id,
-            title: req.body.Ltitle,
-            start_of_lecture: req.body.start_of_lecture,
-            end_of_lecture: req.body.end_of_lecture,
-        });
-            result.lectures.push(newLec._id);
-            result.save();
-            res.send("all done");
-        })
-      .catch(err => {
-        console.log(err);
-      });
-    */});
+});
 
 router.post('/',upload.single('EligibleStudent'),async (req,res) =>{
 const array =await csv().fromFile(req.file.path);
