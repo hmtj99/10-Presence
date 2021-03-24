@@ -32,6 +32,56 @@ router.get('/AllCourse',authCheck,(req,res) => {
     });
 })
 
+router.get('/:id',authCheck, (req, res) => {
+    const id = req.params.id;
+    console.log(id);
+    Course.findById(id)
+      .then(result => {
+        res.render('NewLecture',{Course : result});
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  });
+
+router.post('/NewLecture',async (req,res)=>{
+  const array = await Course.findById(req.body.course);
+  console.log(array); 
+  if(array){
+      const newLec =await Lecture.create({
+      course:array._id,
+      title: req.body.Ltitle,
+      start_of_lecture: req.body.start_of_lecture,
+      end_of_lecture: req.body.end_of_lecture,
+    });
+    array.lectures.push(newLec._id);
+    console.log(array);
+    array.save();
+  
+  }
+  res.send("all done");
+
+
+        /*
+    const id = req.body.course;
+    console.log("this post",id);
+    Course.findById(id)
+    .then(result => {
+            console.log("this is result",result)
+            const newLec =Lecture.create({
+            course:result._id,
+            title: req.body.Ltitle,
+            start_of_lecture: req.body.start_of_lecture,
+            end_of_lecture: req.body.end_of_lecture,
+        });
+            result.lectures.push(newLec._id);
+            result.save();
+            res.send("all done");
+        })
+      .catch(err => {
+        console.log(err);
+      });
+    */});
 
 router.post('/',upload.single('EligibleStudent'),async (req,res) =>{
 const array =await csv().fromFile(req.file.path);
@@ -58,54 +108,7 @@ const newCourse =await Course.create({
 });
 fs.unlinkSync(req.file.path);
 res.send("done");
-})
-
-
+});
 
 module.exports = router;
 
-/*
-// Work in progress - Code for testing 
-router.get('/', async (req,res) => {
-    if(!req.user){
-        res.redirect('/auth/login');
-        return;
-    }
-    try{
-        const doc = await Course.create({
-            instructor: req.user.id,
-            title: 'test course 1',
-            lectures: []
-        });
-        const currentUser = await User.findById(req.user.id);
-        currentUser.coursesTeaching.push(doc._id);
-        currentUser.save();
-        res.send("Course created");
-    }
-    catch(error){
-        console.log(error);
-    }
-})
-
-router.get('/lecture', async (req,res) => {
-    if(!req.user){
-        res.redirect('/auth/login');
-        return;
-    }
-    try{
-        const course = await Course.findOne();
-        const doc = await Lecture.create({
-            course: course._id,
-            title: 'test lecture 1',
-            studentsEnrolled: [],
-            studentEligibleToEnroll: [],
-        });
-        course.lectures.push(doc._id);
-        course.save();
-        res.send("Lecture created");
-    }
-    catch(error){
-        console.log(error);
-    }
-})
-*/
