@@ -28,15 +28,32 @@ router.get('/getlecturelist', async(req, res) => {
 
         console.log(us.courseLectureMap);
         //res.send(us);
-
-
+        /* var course_attend = [];
         us.courseLectureMap.forEach(item => {
             console.log(item);
+        });
+
+        */
+
+        Course.find({ studentsEnrolled: user_ids }, function(err, doc) {
+
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(doc);
+
+                doc.forEach(item => {
+                    console.log(item);
+                });
 
 
+
+
+            }
 
 
         });
+
 
 
 

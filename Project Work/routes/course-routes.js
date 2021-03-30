@@ -23,8 +23,8 @@ router.get('/', async(req, res) => {
             instructor: req.user.id,
             title: 'test course 1',
             lectures: [],
-            studentsEnrolled: [mongoose.Types.ObjectId('60319538bc0bc9c95d46a91c'), mongoose.Types.ObjectId('601fff7b30add2b29e08c547')],
-            studentsEligibleToEnroll: [mongoose.Types.ObjectId('60319538bc0bc9c95d46a91c'), mongoose.Types.ObjectId('601fff7b30add2b29e08c547')],
+            studentsEnrolled: [mongoose.Types.ObjectId('60319538bc0bc9c95d46a91c'), mongoose.Types.ObjectId('604d035ff6da592590f1c655')],
+            studentsEligibleToEnroll: [mongoose.Types.ObjectId('60319538bc0bc9c95d46a91c'), mongoose.Types.ObjectId('604d035ff6da592590f1c655')],
         });
         const currentUser = await User.findById(req.user.id);
         currentUser.coursesTeaching.push(doc._id);
@@ -47,6 +47,7 @@ router.get('/lecture', async(req, res) => {
             title: 'test lecture email 2',
         });
         course.lectures.push(doc._id);
+        console.log(course);
         course.save();
         res.send("Lecture created");
     } catch (error) {
