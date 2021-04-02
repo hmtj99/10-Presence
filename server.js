@@ -2,6 +2,7 @@ const express = require('express');
 const authRoutes = require('./routes/auth-routes');
 const profileRoutes = require('./routes/profile-routes');
 const courseRoutes = require('./routes/course-routes');
+const findRoutes = require('./routes/find-routes');
 const passportSetup = require('./config/passport-setup');
 const mongoose = require('mongoose');
 const keys = require('./config/keys');
@@ -28,6 +29,7 @@ app.use(express.static('public'));
 app.use('/auth',authRoutes);
 app.use('/profile',profileRoutes);
 app.use('/course',courseRoutes);
+app.use('/find',findRoutes);
 
 app.get('/', (req,res) => {
     res.render('home');
