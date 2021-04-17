@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Course</title>
+</head>
+<body>
+      <div class="Courses">
+    <h2>All Courses</h2>
+
+    <% if (Courses.length > 0) { %>
+      <% Courses.forEach(Course => { %>
+        <a  href="/course/<%= Course._id %>">
+          <h3><%= Course.title %></h3>
+          <p>add lecture</p>
+          </a>
+      <% }) %>
+    <% } else { %>
+      <p>There are no Course to display...</p>
+    <% } %>
+    
+  </div>
+</body>
+</html>

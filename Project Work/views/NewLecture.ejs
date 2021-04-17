@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Profile</title>
+        </head>
+<body>
+
+    <h2>Text input fields</h2>
+
+    <div class="create-Lecture">
+        <form action="/course/NewLecture" method="POST" >
+        
+            
+            <input type="hidden" id="course" name="course" required value="<%=Course._id%>"><br>
+
+            <label for="Ltitle">lecture title:</label>
+            <input type="text" id="Ltitle" name="Ltitle" required><br>
+
+            <label for="start_of_lecture">start of lecture(date and time):</label>
+            <input type="datetime-local" id="start_of_lecture" name="start_of_lecture"><br>
+            
+            <label for="end_of_lecture">End of lecture(date and time):</label>
+            <input type="datetime-local" id="end_of_lecture" name="end_of_lecture"><br>
+            
+            <button>Submit</button>
+        </form>
+    </div>
+
+    <p>Note that the form itself is not visible.</p>
+
+    <p>Also note that the default width of text input fields is 20 characters.</p>
+
+</body>
+
+</html>
