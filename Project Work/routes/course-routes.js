@@ -2,6 +2,7 @@ const router = require("express").Router();
 const Course = require('../models/course.model');
 const User = require('../models/user.model');
 const Lecture = require('../models/lecture.model');
+let converter = require('json-2-csv');
 const {
     generateTokenFromUserAndLecture,
     getEmailTemplate,
@@ -123,6 +124,58 @@ router.get('/markAttendance', async (req,res) => {
 
     res.send("<h1>Attendance Marked</h1>");
 
+})
+
+
+
+router.get('/getAttendance',async (req, res)=>{
+     courseId= req.query.courseId;
+     let course ;
+
+     try{
+         course = await Course.findById(courseId);
+    
+     }
+     catch(error){
+      return res.json({status:"error", message:"Course not found"});
+     }
+     const data = [];
+     if(course.instructor.toString() === req.user._id.toString()){
+         const students = course.studentsEnrolled;
+         const totalLectures = course.lectures.length;
+         if(totalLectures === 0){
+             return res.json({status:"error", message:"No lectures have been taken in this course"});
+         }
+         for(const studentId of students){
+             student = await User.findById(studentId);
+             if(!student.courseLectureMap){
+                 continue;
+             }
+             const attendedLectures = student.courseLectureMap.get(course._id.toString()).length;
+             percentage = ((attendedLectures/totalLectures)*100).toFixed(2);
+             data.push({
+                 id: student.email.split("@")[0],
+                 name: student.name,
+                 attendance: percentage,
+             })
+         }
+         console.log(data);
+         
+     }
+     else{
+         return res.json({status:"error", message:"The data can only be accessed by the instructor"});
+     }
+     
+     converter.json2csv(data, (err,csv) => {
+        if(err){
+            console.log(err);
+            return res.json({status:"error", message:"Error sending CSV"});
+        }
+        console.log(csv);
+        res.setHeader('Content-Type', 'text/csv');
+        res.attachment('data.csv');
+        return res.send(csv);
+    })
 })
 
 
