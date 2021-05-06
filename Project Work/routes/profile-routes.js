@@ -1,4 +1,6 @@
 const router = require("express").Router();
+const User = require('../models/user.model');
+const Course = require('../models/course.model');
 
 router.get('/', (req, res) => {
     if (!req.user) {
@@ -12,7 +14,7 @@ router.get('/', (req, res) => {
 //http://localhost:3000/profile/getlecturelist?userId=60319538bc0bc9c95d46a91c
 //http://localhost:3000/profile/getlecturelist?userId=604d035ff6da592590f1c655
 
-router.get('/getlecturelist', async(req, res) => {
+router.get('/getlecturelist', async (req, res) => {
     if (!req.user) {
         res.redirect('/auth/login');
         return;
@@ -36,7 +38,7 @@ router.get('/getlecturelist', async(req, res) => {
         // for (var i = 0; i < us.courseLectureMap)
         //console.log(lecture_attend);
 
-        Course.find({ studentsEnrolled: user_ids }, function(err, doc) {
+        Course.find({ studentsEnrolled: user_ids }, function (err, doc) {
 
             if (err) {
                 console.log(err);

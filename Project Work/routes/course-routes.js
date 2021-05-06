@@ -8,6 +8,9 @@ const {
     getEmailTemplate,
     getMarkAttendanceURL,
     transporter,
+    generateTokenFromUserAndCourse,
+    getInvitationURL,
+    getCourseInvitationEmailTemplate,
 } = require('../modules/email');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
@@ -19,30 +22,16 @@ const fs = require('fs');
 const multer = require('multer');
 const upload = multer({ dest: 'tmp/csv/' });
 
-// Work in progress - Code for testing 
-router.get('/', async(req, res) => {
+
+const authCheck = (req, res, next) => {
     if (!req.user) {
         res.redirect('/auth/login');
-        return;
+    } else {
+        next();
     }
-    try {
-        const doc = await Course.create({
-            instructor: req.user.id,
-            title: 'test course 1',
-            lectures: [],
-            studentsEnrolled: [mongoose.Types.ObjectId('60319538bc0bc9c95d46a91c'), mongoose.Types.ObjectId('601fff7b30add2b29e08c547')],
-            studentsEligibleToEnroll: [mongoose.Types.ObjectId('60319538bc0bc9c95d46a91c'), mongoose.Types.ObjectId('601fff7b30add2b29e08c547')],
-        });
-        const currentUser = await User.findById(req.user.id);
-        currentUser.coursesTeaching.push(doc._id);
-        currentUser.save();
-        res.send("Course created");
-    } catch (error) {
-        console.log(error);
-    }
-})
+};
 
-router.get('/lecture', async(req, res) => {
+router.get('/lecture', authCheck, async (req, res) => {
     if (!req.user) {
         res.redirect('/auth/login');
         return;
@@ -63,7 +52,7 @@ router.get('/lecture', async(req, res) => {
 
 // http://localhost:3000/course/sendLectureAttendanceLinks?lectureId=6045362a668a248c19e2943b
 
-router.get('/sendLectureAttendanceLinks', async(req, res) => {
+router.get('/sendLectureAttendanceLinks', async (req, res) => {
     const lectureId = req.query.lectureId;
     const lecture = await Lecture.findById(lectureId);
     const course = await Course.findById(lecture.course);
@@ -87,7 +76,7 @@ router.get('/sendLectureAttendanceLinks', async(req, res) => {
     return res.json({ status: 'ok', message: 'All mails sent' });
 })
 
-router.get('/markAttendance', async(req, res) => {
+router.get('/markAttendance', async (req, res) => {
     const token = req.query.token;
     const userId = req.query.userId;
 
@@ -128,7 +117,7 @@ router.get('/markAttendance', async(req, res) => {
 
 
 
-router.get('/getAttendance', async(req, res) => {
+router.get('/getAttendance', async (req, res) => {
     courseId = req.query.courseId;
     let course;
 
@@ -176,15 +165,7 @@ router.get('/getAttendance', async(req, res) => {
     })
 })
 
-
-const authCheck = (req, res, next) => {
-    if (!req.user) {
-        res.redirect('/auth/login');
-    } else {
-        next();
-    }
-};
-router.get('/NewCourse', authCheck, (req, res) => {
+router.get('/createCourse', authCheck, (req, res) => {
     res.render('NewCourse');
 })
 
@@ -198,7 +179,8 @@ router.get('/AllCourse', authCheck, (req, res) => {
         });
 })
 
-router.get('/:id', authCheck, (req, res) => {
+// http://localhost:3000/course/createLecture/609427b182ebff21b49869b3
+router.get('/createLecture/:id', authCheck, (req, res) => {
     const id = req.params.id;
     console.log(id);
     Course.findById(id)
@@ -210,7 +192,8 @@ router.get('/:id', authCheck, (req, res) => {
         });
 });
 
-router.post('/NewLecture', async(req, res) => {
+router.post('/NewLecture', async (req, res) => {
+    console.log(req.body);
     const array = await Course.findById(req.body.course);
     console.log(array);
     if (array) {
@@ -223,12 +206,11 @@ router.post('/NewLecture', async(req, res) => {
         array.lectures.push(newLec._id);
         console.log(array);
         array.save();
-
+        return res.redirect(`sendLectureAttendanceLinks?lectureId=${newLec._id}`);
     }
-    res.send("all done");
 });
 
-router.post('/', upload.single('EligibleStudent'), async(req, res) => {
+router.post('/', upload.single('EligibleStudent'), async (req, res) => {
     const array = await csv().fromFile(req.file.path);
     console.log(array);
     let Es = [];
@@ -252,30 +234,27 @@ router.post('/', upload.single('EligibleStudent'), async(req, res) => {
         criteria: req.body.criteria,
     });
     fs.unlinkSync(req.file.path);
+
+    for (const userId of Es) {
+        const user = await User.findById(userId);
+        sendInvitationLink(user, newCourse);
+    }
+
     res.send("done");
 });
 
-
-router.get('/findCourse', authCheck, (req, res) => {
-    res.render('findCourse');
-});
-
-router.get('/findLecture', authCheck, (req, res) => {
-    res.render('findLecture');
-});
-
-router.post('/findCourse', (req, res) => {
-    Course.findOne({ _id: req.body.Cid }).lean().
-    then(course => res.json({ course })).
-    catch(error => res.json({ error: error.message }));
+router.get('/findCourse/:id', (req, res) => {
+    Course.findOne({ _id: req.params.id }).lean().
+        then(course => res.json({ course })).
+        catch(error => res.json({ error: error.message }));
 
 });
 
 
-router.post('/findLecture', (req, res) => {
-    Lecture.findOne({ _id: req.body.Lid }).lean().
-    then(lecture => res.json({ lecture })).
-    catch(error => res.json({ error: error.message }));
+router.get('/findLecture/:id', (req, res) => {
+    Lecture.findOne({ _id: req.params.id }).lean().
+        then(lecture => res.json({ lecture })).
+        catch(error => res.json({ error: error.message }));
 
 });
 
@@ -283,7 +262,7 @@ router.post('/findLecture', (req, res) => {
 
 // http://localhost:3000/course/getattendancecriteria?courseId=60450eaa7ce02484799abc5f
 
-router.get('/getattendancecriteria', async(req, res) => {
+router.get('/getattendancecriteria', async (req, res) => {
     if (!req.user) {
         res.redirect('/auth/login');
         return;
@@ -298,6 +277,41 @@ router.get('/getattendancecriteria', async(req, res) => {
         console.log(error);
     }
 })
+
+router.get('/addStudentToCourse', async (req, res) => {
+    try {
+        const token = req.query.token;
+        const { courseId, userId } = jwt.verify(token, secret);
+        const course = await Course.findById(courseId);
+        if (course.studentsEligibleToEnroll.includes(userId)) {
+            if (course.studentsEnrolled.includes(userId)) {
+                return res.json({ message: "You are already enrolled in the course" });
+            }
+            course.studentsEnrolled.push(userId);
+            course.save();
+            return res.json({ message: "Student added to course" });
+        } else {
+            return res.json({ message: "Student not eligible to enroll" });
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.json(error);
+    }
+})
+
+const sendInvitationLink = async (user, course) => {
+    const token = await generateTokenFromUserAndCourse(user._id, course._id);
+    const url = getInvitationURL(user, token);
+    const emailTemplate = getCourseInvitationEmailTemplate(user, course, url);
+    await transporter.sendMail(emailTemplate, (err, info) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+        console.log(`Email sent to ${user.email}`);
+    });
+}
 
 
 module.exports = router;
