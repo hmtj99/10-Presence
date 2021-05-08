@@ -17,6 +17,7 @@ app.use(cookieSession({
     keys: [keys.cookieKey]
 }))
 
+app.use('/public', express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());

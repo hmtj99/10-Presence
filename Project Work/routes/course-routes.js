@@ -73,7 +73,7 @@ router.get('/sendLectureAttendanceLinks', async (req, res) => {
             console.log(`Email sent to ${user.email}`);
         })
     }
-    return res.json({ status: 'ok', message: 'All mails sent' });
+    return res.render('success-links', { courseId: course._id });
 })
 
 router.get('/markAttendance', async (req, res) => {
@@ -106,12 +106,16 @@ router.get('/markAttendance', async (req, res) => {
                 user.courseLectureMap.set(payload.courseId, [payload.lectureId]);
             }
             await user.save();
+
+            const lecture = await Lecture.findById(payload.lectureId);
+            lecture.attending_students.push(payload.userId);
+            await lecture.save();
         } catch (error) {
             return res.json({ status: 'error', message: "Error marking attendance" });
         }
     }
 
-    res.send("<h1>Attendance Marked</h1>");
+    res.render("success-marked");
 
 })
 
@@ -185,7 +189,7 @@ router.get('/createLecture/:id', authCheck, (req, res) => {
     console.log(id);
     Course.findById(id)
         .then(result => {
-            res.render('NewLecture', { Course: result });
+            res.render('createLecture', { Course: result });
         })
         .catch(err => {
             console.log(err);
@@ -234,13 +238,14 @@ router.post('/', upload.single('EligibleStudent'), async (req, res) => {
         criteria: req.body.criteria,
     });
     fs.unlinkSync(req.file.path);
-
+    req.user.coursesTeaching.push(newCourse._id);
+    req.user.save();
     for (const userId of Es) {
         const user = await User.findById(userId);
         sendInvitationLink(user, newCourse);
     }
 
-    res.send("done");
+    res.redirect(`http://localhost:3000/course/taught_course/${newCourse._id}`);
 });
 
 router.get('/findCourse/:id', (req, res) => {
@@ -289,7 +294,10 @@ router.get('/addStudentToCourse', async (req, res) => {
             }
             course.studentsEnrolled.push(userId);
             course.save();
-            return res.json({ message: "Student added to course" });
+            const user = await User.findById(userId);
+            user.coursesEnrolledIn.push(courseId);
+            user.save();
+            return res.render("success-invite");
         } else {
             return res.json({ message: "Student not eligible to enroll" });
         }
@@ -313,5 +321,103 @@ const sendInvitationLink = async (user, course) => {
     });
 }
 
+router.get('/taught_course/:courseId', async (req, res) => {
+    try {
+        const courseId = req.params.courseId;
+        const course = await Course.findById(courseId);
+
+        const enrolled_courses = [];
+        const taught_courses = [];
+        for (const courseId of req.user.coursesEnrolledIn) {
+            const course = await Course.findById(courseId).lean();
+            enrolled_courses.push(course);
+        }
+        for (const courseId of req.user.coursesTeaching) {
+            const course = await Course.findById(courseId).lean();
+            taught_courses.push(course);
+        }
+
+        const lectureTitles = [];
+        const lectureStats = [];
+        for (const lectureId of course.lectures) {
+            const lecture = await Lecture.findById(lectureId).lean();
+            lectureTitles.push(lecture.title);
+            lectureStats.push(lecture.attending_students.length);
+        }
+
+        const total_lectures = course.lectures.length;
+        const studentData = [];
+        for (const studentId of course.studentsEnrolled) {
+            const user = await User.findById(studentId);
+            console.log(user.email);
+            console.log(courseId);
+            console.log(user.courseLectureMap.get(courseId));
+            let classes_attended = 0;
+            let attendance_percentage = 0;
+            if (user.courseLectureMap.get(courseId)) {
+                classes_attended = user.courseLectureMap.get(courseId).length;
+            }
+            if (total_lectures !== 0) {
+                attendance_percentage = (classes_attended / total_lectures).toFixed(2) * 100;
+            }
+            // const attendance_percentage = (classes_attended / total_lectures).toFixed(2) * 100;
+            const above_criteria = attendance_percentage >= course.criteria ? "Yes" : "No";
+            studentData.push({
+                name: user.name,
+                classes_attended,
+                attendance_percentage,
+                above_criteria
+            })
+        }
+
+        console.log("studentData- ", studentData);
+        res.render("courses_taught", { course, enrolled_courses, taught_courses, user: req.user, lectureTitles, lectureStats, studentData });
+    }
+    catch (error) {
+        console.log(error);
+        res.json({ "error": error.message });
+    }
+})
+
+router.get('/enrolled_course/:courseId', async (req, res) => {
+    try {
+        const courseId = req.params.courseId;
+        const course = await Course.findById(courseId);
+
+        const enrolled_courses = [];
+        const taught_courses = [];
+        for (const courseId of req.user.coursesEnrolledIn) {
+            const course = await Course.findById(courseId).lean();
+            enrolled_courses.push(course);
+        }
+        for (const courseId of req.user.coursesTeaching) {
+            const course = await Course.findById(courseId).lean();
+            taught_courses.push(course);
+        }
+
+        const instructor = await User.findById(course.instructor).lean();
+        const attendance = (req.user.courseLectureMap.get(courseId).length / course.lectures.length).toFixed(2) * 100;
+        const classes = req.user.courseLectureMap.get(courseId).length;
+        const lecturesTitles = [];
+        const lectureData = [];
+        for (const lectureId of course.lectures) {
+            const lecture = await Lecture.findById(lectureId).lean();
+            lecturesTitles.push(lecture.title);
+            if (req.user.courseLectureMap.get(courseId).includes(lectureId)) {
+                lectureData.push(1);
+            }
+            else {
+                lectureData.push(0);
+            }
+        }
+        console.log(lecturesTitles);
+        console.log(lectureData);
+        res.render("enrolled_course", { course, enrolled_courses, taught_courses, user: req.user, instructor, attendance, classes, lecturesTitles, lectureData });
+    }
+    catch (error) {
+        console.log(error);
+        res.json({ "error": error.message });
+    }
+})
 
 module.exports = router;
