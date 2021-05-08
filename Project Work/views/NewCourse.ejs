@@ -1,39 +1,92 @@
 <!DOCTYPE html>
-<html>
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Profile</title>
-        </head>
-<body>
+<html lang="en">
 
-    <h2>Text input fields</h2>
+<head>
 
-    <div class="create-class content">
-        <form action="/course" method="POST" enctype="multipart/form-data">
-        
-            <label for="Ctitle">Class title:</label>
-            <input type="text" id="Ctitle" name="Ctitle" required><br>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-            <label for="start_of_class">start of class(date and time):</label>
-            <input type="datetime-local" id="start_of_class" name="start_of_class"><br>
-            
-            <label for="end_of_class">End of class(date and time):</label>
-            <input type="datetime-local" id="end_of_class" name="end_of_class"><br>
-            
-            <label for="criteria">Attendance Criteria:</label>
-            <input type="text" id="criteria" name="criteria" required><br>
+    <title>Presence: Start a Course</title>
 
-            <label for="EligibleStudent">Select a file of Student Eligible to Enroll:</label>
-            <input type="file" id="EligibleStudent" name="EligibleStudent" >
-            
-            <button>Submit</button>
-        </form>
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="/public/assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="/public/assets/css/sb-admin-2.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-gradient-primary">
+
+    <div class="container" style="min-height:100vh; display:flex; align-items:center;">
+
+        <div class="card o-hidden border-0 shadow-lg my-5 col-sm-12">
+            <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">Start a Course</h1>
+                            </div>
+                            <form action="/course" method="POST" enctype="multipart/form-data" class="user">
+                                <div class="form-group">
+                                    <input type="text" class="form-control form-control-user" id="Ctitle" name="Ctitle" required
+                                        placeholder="Course Name">
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input type="datetime-local" class="form-control form-control-user" id="start_of_class" name="start_of_class"
+                                            placeholder="Start Date">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="datetime-local" class="form-control form-control-user" id="end_of_class" name="end_of_class"
+                                            placeholder="End Date">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-12 mb-3 mb-sm-0">
+                                        <input type="text" class="form-control form-control-user"
+                                            id="criteria" placeholder="Attendance Criteria" name="criteria" required min="0" max="100">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-12 mb-3">
+                                        <input type="file" class="form-control" id="EligibleStudent" name="EligibleStudent">
+                                    </div>
+                                </div>
+                                <div class="form-group row justify-content-center">
+                                    <div class="col-sm-6">
+                                        <button type="submit" class="btn btn-primary btn-user btn-block">Submit</button>
+                                    </div>
+                                </div>
+                                <hr>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <p>Note that the form itself is not visible.</p>
+    <!-- Bootstrap core JavaScript-->
+    <script src="/public/assets/vendor/jquery/jquery.min.js"></script>
+    <script src="/public/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <p>Also note that the default width of text input fields is 20 characters.</p>
+    <!-- Core plugin JavaScript-->
+    <script src="/public/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="/public/assets/js/sb-admin-2.min.js"></script>
 
 </body>
 

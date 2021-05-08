@@ -2,12 +2,23 @@ const router = require("express").Router();
 const User = require('../models/user.model');
 const Course = require('../models/course.model');
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     if (!req.user) {
         res.redirect('/auth/login');
         return;
     }
-    res.render('profile', { user: req.user })
+
+    const enrolled_courses = [];
+    const taught_courses = [];
+    for (const courseId of req.user.coursesEnrolledIn) {
+        const course = await Course.findById(courseId).lean();
+        enrolled_courses.push(course);
+    }
+    for (const courseId of req.user.coursesTeaching) {
+        const course = await Course.findById(courseId).lean();
+        taught_courses.push(course);
+    }
+    res.render('dashboard', { user: req.user, enrolled_courses, taught_courses })
 })
 
 
